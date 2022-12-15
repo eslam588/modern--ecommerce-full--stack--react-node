@@ -1,0 +1,20 @@
+.css-19r6kue-MuiContainer-root {
+  background-color: RGB(255, 255, 255);
+  color: black;
+}
+.activelink {
+  border-bottom: 2px solid RGB(1, 61, 41);
+}
+a {
+  text-decoration: none !important;
+  color: #000 !important;
+  padding: 5px;
+}
+
+
+.username{
+  font-size:13px;
+  font-weight:bold;
+  margin-left:5px
+
+}

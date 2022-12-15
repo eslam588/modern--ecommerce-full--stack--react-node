@@ -1,0 +1,77 @@
+.card {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 1px -2px 17px 0px rgba(0, 0, 0, 0.38);
+  border-radius: 20px;
+}
+
+.card .card-sale {
+  position: absolute;
+  width: 35px;
+  border-radius: 90%;
+  height: 35px;
+  top: 15px;
+  right: 15px;
+  z-index: 5;
+}
+.card .card-sale span {
+  line-height: 35px;
+  color: white;
+}
+.card .card-img {
+  height: 15rem;
+}
+
+.card .card-img img {
+  height: 90%;
+  width: 100%;
+  transition: all 0.4s ease-in-out;
+}
+.card .card-img:hover img {
+  transform: scale(1.1);
+}
+
+.card a {
+  text-decoration: none;
+}
+
+.card .card-details h3,
+.card .card-details p {
+  color: #791a1a;
+}
+.card .card-details p {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.card button {
+  background: RGB(1, 61, 41);
+  color: white;
+  font-weight: bold;
+}
+
+.inCart {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  right: 0;
+  color: white;
+  background: #585454;
+  opacity: 0.8;
+  margin: 0 auto;
+  padding: 5px;
+  border: 1px solid lightgrey;
+
+  transition: all 0.3s ease-in-out;
+  font-size: 18px;
+  text-transform: capitalize;
+  letter-spacing: 0.1rem;
+  font-style: italic;
+}
+
+.newInCart {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+}

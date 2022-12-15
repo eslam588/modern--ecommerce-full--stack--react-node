@@ -1,0 +1,8 @@
+.slider {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("../../../public/slider.jpg") no-repeat center center;
+  background-size: cover;
+  padding-bottom: 50px;
+  width: 100%;
+  height: calc(100vh - 64px);
+}
