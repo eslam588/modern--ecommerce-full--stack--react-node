@@ -11,16 +11,23 @@ import Products from './pages/Products/Products';
 import SingleProduct from './pages/SingleProduct/SingleProduct';
 import AboutUs from "./pages/AboutUs/AboutUs"
 import Profile from './pages/Profile.js/Profile';
+import Payment from './pages/Payment/Payment';
 import {Navigate , Routes, Route} from "react-router-dom";
 import {useDispatch} from "react-redux"
 import {getuserdata} from "./store/authSlice"
 import {getproducts} from "./store/productSlice";
 import {getallcartproducts} from './store/cartSlice'
 
+import {loadStripe} from '@stripe/stripe-js';
+import {Elements} from '@stripe/react-stripe-js';
+const stripePromise=loadStripe("pk_test_51MFIdwB05pMXvSjmZQlaI443GxwnkF1wC6kkv3NusnoIYc3oyTSdcKOwMNW9HBLddqAq68fLZU2Uy3CbZgtc0Gdh00PdcJ5qRM")
+
+
 function App() {
+   
 
   let userId =JSON.parse(localStorage.getItem('userId'));
-  const {token} = useSelector((state)=> state.auth)
+  const {isLoggedIn} = useSelector((state)=> state.auth)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -30,23 +37,26 @@ function App() {
 }, [])
 
   return (
+    <Elements stripe={stripePromise}>
     <div className="App">
         <Header/>
         <Routes>
           <Route path='/' element={<Navigate to='/home' />} />
-          <Route path='/home' element={token ? <HomePage/> : <Login/>} />
-          <Route path="/register" element={!token ? <Register/> : <HomePage/> } />
-          <Route path="/login"  element={!token ? <Login/> : <HomePage/> } />
-          <Route path="/products" element={token ? <Products /> : <Login/>} />
-          <Route path="/products/search/:keyword" element={token ? <Products/> : <Login/>} />
-          <Route path="/products/:id" element={token ? <SingleProduct /> : <Login/>} />
-          <Route path="/cart" element={token ? <Cart /> : <Login/> } />  
-          <Route path="/aboutus" element={token ? <AboutUs /> : <Login/>} />  
-          <Route path="/profile" element={ token ?<Profile /> : <Login/>} />  
-          <Route path="*" element={token ? <Error/> : <Login/>}/>
+          <Route path='/home' element={<HomePage/>} />
+          <Route path="/register" element={!isLoggedIn ? <Register/> : <HomePage/> } />
+          <Route path="/login"  element={!isLoggedIn ? <Login/> : <HomePage/> } />
+          <Route path="/products" element={<Products />} />
+          {/* <Route path="/products/search/:keyword" element={token ? <Products/> : <Login/>} /> */}
+          <Route path="/products/:id" element={<SingleProduct />} />
+          <Route path="/cart" element={isLoggedIn ? <Cart /> : <Login/>} />  
+          <Route path="/aboutus" element={!isLoggedIn ? <AboutUs /> : <Login/>} />  
+          <Route path="/profile" element={isLoggedIn ?<Profile /> : <Login/>} />  
+          <Route path="/payment" element={isLoggedIn ?<Payment /> : <Login/>} />  
+          <Route path="*" element={!isLoggedIn ? <Error/> : <Login/>}/>
         </Routes>
         <Footer /> 
     </div>
+    </Elements>
   );
 }
 

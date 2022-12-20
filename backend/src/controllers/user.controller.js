@@ -5,10 +5,20 @@ class User {
 
     static register = async (req,res) => {
         try{
-            const userData= new userModel(req.body);
-            await userData.save();
-            res.status(200).send({apiStatus:true , data:userData , message:"User Registered" })
-            
+            // let email=req.body.email
+            const userregister = await userModel.findOne({email:req.body.email});
+            if(userregister)
+            {
+                console.log("exists")
+                res.status(200).send({mesg:"user exist already"})
+            }
+            else
+            {
+                const userData= new userModel(req.body);
+                await userData.save();
+                res.status(200).send({apiStatus:true , data:userData , message:"User Registered Success"}) 
+            }
+              
         }
         catch(e){
             res.status(500).send({apiStatus:false , data:e , message:e.message})

@@ -95,6 +95,7 @@ const initialState = {
   userData:{},
   token:JSON.parse(localStorage.getItem("token")),
   messagereg: null,
+  messageexit:null
 };
 const authSlice= createSlice({
     name:"auth",
@@ -118,6 +119,8 @@ const authSlice= createSlice({
         [registeruser.fulfilled]: (state,action) => {
             state.error=null;
             state.messagereg=action.payload.data.message
+            state.messageexit=action.payload.data.mesg
+
         },
         [registeruser.rejected]: (state,action) => {
           state.error=action.payload     
@@ -129,6 +132,7 @@ const authSlice= createSlice({
         },
         [loginuser.fulfilled]: (state,action) => {
             state.error=null;
+            state.isLoggedIn=true;
             state.token=action.payload.data.token; 
         },
         [loginuser.rejected]: (state,action) => {

@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
@@ -42,11 +41,8 @@ function ResponsiveAppBar() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
 
-  const {userData,token} = useSelector((state)=> state.auth)
+  const {userData,isLoggedIn} = useSelector((state)=> state.auth)
   const totalproductscart = useSelector((state) => state.cart.totalproductscart);
-
- console.log(totalproductscart);
-
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -111,7 +107,7 @@ function ResponsiveAppBar() {
             >
               <MenuIcon />
             </IconButton>
-            {token && (
+            {isLoggedIn && (
                <Menu
                id="menu-appbar"
                anchorEl={anchorElNav}
@@ -158,7 +154,7 @@ function ResponsiveAppBar() {
             Shopcart
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' , justifyContent: 'center' }}}>
-                {token && pages.map((page) => (
+                {pages.map((page) => (
                   <Button 
                   key={page}
                   onClick={handleCloseNavMenu}
@@ -172,11 +168,11 @@ function ResponsiveAppBar() {
                ))}
           </Box>
           {
-           token && (
+           isLoggedIn && (
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{p: 0 }}>
-                <img src={`http://localhost:8000/${userData?.profilePic}`} width="40px" height="40px" />
+                <img src={`http://localhost:8000/${userData?.profilePic}`} width="40px" height="40px" alt="userimage" />
                 <span className='username'>{userData?.username}</span>
               </IconButton>
             </Tooltip>
@@ -212,7 +208,7 @@ function ResponsiveAppBar() {
           }
 
           {
-            !token && (
+            !isLoggedIn && (
               <>
                  <div>
                   <NavLink to="/login">Login</NavLink>
@@ -225,7 +221,7 @@ function ResponsiveAppBar() {
           }
           <IconButton aria-label="cart"  sx={{fontSize:"26px", ml:3}}>
             <NavLink to="/cart">
-              <StyledBadge badgeContent={totalproductscart} color="secondary">
+              <StyledBadge badgeContent={totalproductscart || "0"} color="secondary">
                 <ShoppingCartIcon />
               </StyledBadge>
             </NavLink>

@@ -1,12 +1,18 @@
 import { createSlice , createAsyncThunk } from "@reduxjs/toolkit";
+import {logout} from "./authSlice";
 import axios from "axios"
 
 
 export const addtocart = createAsyncThunk('cart/addtocart', async(cartproduct,thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
+        const token = JSON.parse(localStorage.getItem("token"));
         let url = `http://localhost:8000/cart/newcart`
-        const res= await axios.post(url,cartproduct)
+        const res= await axios.post(url,cartproduct,{
+            headers:{
+                'Authorization': token
+            }
+        })
         return res
     }
     catch(e){
@@ -17,8 +23,13 @@ export const addtocart = createAsyncThunk('cart/addtocart', async(cartproduct,th
 export const getallcartproducts = createAsyncThunk('cart/getallcartproducts', async(userId,thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
+        const token = JSON.parse(localStorage.getItem("token"));
         let url = `http://localhost:8000/cart/allcartitems/${userId}`
-        const res= await axios.get(url)
+        const res= await axios.get(url,{
+            headers:{
+                'Authorization': token
+            }
+        })
         return res
     }
     catch(e){
@@ -29,8 +40,13 @@ export const getallcartproducts = createAsyncThunk('cart/getallcartproducts', as
 export const deletecartproduct = createAsyncThunk('cart/deletecartproduct', async(data,thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
+        const token = JSON.parse(localStorage.getItem("token"));
         let url = `http://localhost:8000/cart/deletecart${data.id ? `?id=${data.id}` : ""}${data.productId ? `&productId=${data.productId}` : ""}`
-        const res= await axios.delete(url)
+        const res= await axios.delete(url,{
+            headers:{
+                'Authorization': token
+            }
+        })
         return res
     }
     catch(e){
@@ -42,8 +58,13 @@ export const deletecartproduct = createAsyncThunk('cart/deletecartproduct', asyn
 export const updatecartproduct = createAsyncThunk('cart/updatecartproduct', async(data,thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
+        const token = JSON.parse(localStorage.getItem("token"));
         let url = `http://localhost:8000/cart/updatecart${data.id ? `?id=${data.id}` : ""}${data.productId ? `&productId=${data.productId}` : ""}${data.quantity ? `&quantity=${data.quantity}` : ""}`
-        const res= await axios.patch(url)
+        const res= await axios.patch(url,{
+            headers:{
+                'Authorization': token
+            }
+        })
         return res
     }
     catch(e){
@@ -57,8 +78,14 @@ const initialState={cartproducts:[],carttotalprice:0,message:null,totalproductsc
 const cartSlice = createSlice({
     name:"cart",
     initialState,
+    extraReducers: (builder) => {
+        console.log(builder);
+         builder.addCase(logout,(state,action)=> {
+            console.log(state);
+            state.cartproducts=[]
+         })
+    },
     extraReducers:{
-
         [addtocart.pending]: (state,action) => {
             state.error=null
         },

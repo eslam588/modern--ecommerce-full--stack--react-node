@@ -3,6 +3,7 @@ import {useLocation} from 'react-router-dom';
 import Button from '@mui/material/Button';
 import "./SingleProduct.css"
 import {useDispatch,useSelector} from 'react-redux';
+import {useNavigate} from "react-router-dom";
 import {addtocart} from '../../store/cartSlice'
 import Reviews from '../../components/Reviews/Reviews';
 
@@ -11,13 +12,18 @@ import Reviews from '../../components/Reviews/Reviews';
 const SingleProduct = () => {
   const location = useLocation();
   const product = location.state?.product
-
+  const {isLoggedIn} = useSelector((state)=> state.auth)
+  console.log(isLoggedIn);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   let userId =JSON.parse(localStorage.getItem('userId'));
-  
+  // let token = JSON.parse(localStorage.getItem('token'))
 
   const addToCart =(product_id) => {
-      dispatch(addtocart({"id":userId,"productId":product_id,"quantity":1})) 
+    if(!isLoggedIn){
+      navigate("/login")
+    }
+    dispatch(addtocart({"id":userId,"productId":product_id,"quantity":1})) 
   }
 
   const imgDiv = useRef();

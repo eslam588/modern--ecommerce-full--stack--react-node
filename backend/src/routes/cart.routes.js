@@ -1,10 +1,11 @@
 const router= require('express').Router();
 const Cart = require("../controllers/cart.controller")
+const {verifyToken} =require("../middleware/auth.middleware")
 
-router.post("/newcart",  Cart.addCartItem);
-router.get("/allcartitems/:id",  Cart.getAllCartItems);
-router.patch("/updatecart",  Cart.updateCart);
-router.delete("/deletecart",  Cart.deleteCartProduct);
+router.post("/newcart",verifyToken,Cart.addCartItem);
+router.get("/allcartitems/:id",verifyToken,Cart.getAllCartItems);
+router.patch("/updatecart",verifyToken,Cart.updateCart);
+router.delete("/deletecart",verifyToken,Cart.deleteCartProduct);
 
 module.exports=router;
 

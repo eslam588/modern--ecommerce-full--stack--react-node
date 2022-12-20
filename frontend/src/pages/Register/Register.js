@@ -10,7 +10,7 @@ import "./Register.css";
 
 
 const Register = () => {
-  const {error,messagereg} = useSelector((state)=> state.auth)
+  const {error,messagereg,messageexit} = useSelector((state)=> state.auth)
   const dispatch = useDispatch();
 
   // inial values ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -22,6 +22,8 @@ const Register = () => {
   });
   const [errors , setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
+  const [registersuccess,setRegisterSuccess]= useState(false)
+  const [existsuser , setExistsUser] = useState(false)
   const [focusedusername , setFocusedUsername] = useState(false);
   const [focusedemail , setFocusedEmail] = useState(false);
   const [focusedpass , setFocusedPass] = useState(false);
@@ -99,28 +101,33 @@ const Register = () => {
  
   // submitted form ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-  const onhandlesubmit = (e) => {
+  const onhandlesubmit = async (e) => {
       e.preventDefault();
       setSubmitted(true)
       let errors = validate();
       if(errors == null) {
-          setValues({
-            username: "", 
-            email:"", 
-            password:"",
-            confirmpassword:""
-       })
-        setSubmitted(false)
-        setFocusedUsername(false);
-        setFocusedEmail(false);
-        setFocusedPass(false)
-        // setFocusedConPass(false)
-        dispatch(registeruser(values))
-        setTimeout(() => {
-            navigate("/login")
-        }, 2000);
-        
-      }
+            let res = await dispatch(registeruser(values))
+            if(!(res.payload.data.mesg == "user exist already")){
+              setValues({
+                username: "", 
+                email:"", 
+                password:"",
+                confirmpassword:""
+              })
+              setRegisterSuccess(true)
+              setSubmitted(false)
+              setFocusedUsername(false);
+              setFocusedEmail(false);
+              setFocusedPass(false)
+              // setFocusedConPass(false)
+              setTimeout(() => {
+                  navigate("/login")
+              }, 3000);   
+            }  
+            else{
+              setExistsUser(true)
+            } 
+       }
       else{
 
         console.log("errors found");
@@ -131,10 +138,13 @@ const Register = () => {
   return (
     <div className="register-page p-2 d-flex align-items-center justify-content-center"> 
         <form className="register-form px-6 py-3 " onSubmit={onhandlesubmit}>  
-            <h3 className="text-center mb-4">Register</h3>
-            {/* {
-               submitted  && errors=={} && <p className="text-center text-success fs-6  p-1">{messagereg}</p> 
-            }  */}
+            <h3 className="text-center mb-4">Register</h3> 
+            {
+               registersuccess && <p className="text-center text-success fs-6  p-1">{messagereg}</p>
+            } 
+            {
+               existsuser &&   <p className=" text-center text-danger fs-6  p-1">{messageexit}</p>
+            }
             <Box component="form" sx={{'& > :not(style)': { m: 1, width: '35ch' }}} noValidate autoComplete="off" >
               <TextField id="filled-basic" label="Username" variant="filled" name="username" value={values.username} 
               onChange={onchange} className={( submitted || focusedusername) && errors.username ? "border border-2 border-danger" : ""}  
@@ -179,7 +189,11 @@ const Register = () => {
                  {errors.confirmpassword}
                </p>
             ): <p className="p-2"></p>} */}
-            <Button variant="contained" color="success" type="submit" fullWidth="true" sx={{my:2}}  >create my new account</Button>
+            <Button variant="contained" color="success" type="submit" fullWidth="true" sx={{my:2}}>
+              {
+                registersuccess ? "loading...."  : "create my new account"
+              }
+              </Button>
             <p className="text-center">alReady Registered ? <NavLink to="/login"><span className="text-light">Login Now</span></NavLink></p>
         </form> 
     </div>

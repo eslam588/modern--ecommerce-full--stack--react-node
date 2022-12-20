@@ -19,7 +19,7 @@ const UserSchema = mongoose.Schema({
         trim:true , 
         required: true,
         unique:true,
-        // dropDups: true
+        dropDups: true
     },
     password:{
         type: String, 

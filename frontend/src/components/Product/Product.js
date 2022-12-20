@@ -1,18 +1,23 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom';
 import "./Product.css"
-import {useDispatch} from 'react-redux';
+import {useDispatch,useSelector} from 'react-redux';
 import {addtocart} from '../../store/cartSlice'
-
+import {useNavigate} from "react-router-dom";
 const Product = ({product}) => {
 
+const {isLoggedIn} = useSelector((state)=> state.auth)
 const dispatch = useDispatch();
-
+const navigate = useNavigate();
 
 let userId =JSON.parse(localStorage.getItem('userId'));
-
+// let token =JSON.parse(localStorage.getItem("token"))
 
 const addToCart =(product_id) => {
+    if(!isLoggedIn){
+        navigate("/login")
+        
+    }
     dispatch(addtocart({"id":userId,"productId":product_id,"quantity":1})) 
 }
 

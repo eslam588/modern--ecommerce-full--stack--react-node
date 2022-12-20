@@ -12,7 +12,7 @@ router.get("/getallusers",verifyToken, User.getAllUsers);
 router.get("/singleuser/:id",verifyToken, User.singleUser);
 router.patch("/edituser",verifyToken,User.editUser)
 router.post("/imgUpload",verifyToken,upload.single("img"),User.addImg)
-router.get("/logout", User.logOut)
+router.get("/logout",verifyToken,User.logOut)
 
 
 module.exports=router;
