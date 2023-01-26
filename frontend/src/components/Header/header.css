@@ -4,6 +4,11 @@
 }
 .activelink {
   border-bottom: 2px solid RGB(1, 61, 41);
+  background-color:RGB(1, 61, 41);
+  padding: 10px;
+  color:white !important;
+  border-radius:15px;
+  border:2px solid white;
 }
 a {
   text-decoration: none !important;
@@ -17,4 +22,9 @@ a {
   font-weight:bold;
   margin-left:5px
 
+}
+
+AppBar{
+  position:"sticky";
+  top:0;
 }

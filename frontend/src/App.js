@@ -16,10 +16,9 @@ import {Navigate , Routes, Route} from "react-router-dom";
 import {useDispatch} from "react-redux"
 import {getuserdata} from "./store/authSlice"
 import {getproducts} from "./store/productSlice";
-import {getallcartproducts} from './store/cartSlice'
-
 import {loadStripe} from '@stripe/stripe-js';
 import {Elements} from '@stripe/react-stripe-js';
+import Paymentsuccess from './pages/Payment/Paymentsuccess';
 const stripePromise=loadStripe("pk_test_51MFIdwB05pMXvSjmZQlaI443GxwnkF1wC6kkv3NusnoIYc3oyTSdcKOwMNW9HBLddqAq68fLZU2Uy3CbZgtc0Gdh00PdcJ5qRM")
 
 
@@ -33,7 +32,6 @@ function App() {
   useEffect(() => {
     dispatch(getproducts())
     dispatch(getuserdata())
-    dispatch(getallcartproducts(userId))
 }, [])
 
   return (
@@ -45,14 +43,16 @@ function App() {
           <Route path='/home' element={<HomePage/>} />
           <Route path="/register" element={!isLoggedIn ? <Register/> : <HomePage/> } />
           <Route path="/login"  element={!isLoggedIn ? <Login/> : <HomePage/> } />
-          <Route path="/products" element={<Products />} />
+          <Route exact path="/products" element={<Products />} />
           {/* <Route path="/products/search/:keyword" element={token ? <Products/> : <Login/>} /> */}
-          <Route path="/products/:id" element={<SingleProduct />} />
-          <Route path="/cart" element={isLoggedIn ? <Cart /> : <Login/>} />  
-          <Route path="/aboutus" element={!isLoggedIn ? <AboutUs /> : <Login/>} />  
+          <Route exact path="/products/:id" element={<SingleProduct />} />
+          <Route path="/cart" element={<Cart />} />  
+          <Route path="/aboutus" element={<AboutUs />} />  
           <Route path="/profile" element={isLoggedIn ?<Profile /> : <Login/>} />  
           <Route path="/payment" element={isLoggedIn ?<Payment /> : <Login/>} />  
-          <Route path="*" element={!isLoggedIn ? <Error/> : <Login/>}/>
+          <Route path="/success" element={isLoggedIn ?<Paymentsuccess /> : <Login/>} />  
+
+          <Route path="*" element={isLoggedIn ? <Error/> : <Login/>}/>
         </Routes>
         <Footer /> 
     </div>

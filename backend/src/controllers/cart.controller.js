@@ -1,5 +1,6 @@
 const productModel= require('../models/product.model');
 const CartModel = require('../models/cart.model');
+const mongoose = require('mongoose');
 
 class Cart {
 
@@ -67,6 +68,7 @@ class Cart {
     // delete product from cart
     static deleteCartProduct = async (req,res)=>{
         try{
+
             const customerCart = await CartModel.findOne({userId:req.query.id}).populate('products.productId');
             const toDeleteIndex = customerCart.products.findIndex( cartItem => cartItem.productId._id.toString() === req.query.productId);
             if(toDeleteIndex === -1) return res.status(404).send({error:'product Not found',code:404});
@@ -80,6 +82,23 @@ class Cart {
             res.status(400).send({error:e.message,code:400});
         }
     }
+
+    // delete cart products for user 
+
+    static deleteCartProductsForUser = async (req,res)=>{
+        try{
+            const customerCart = await CartModel.findOne({userId:req.params.id})
+            if(!customerCart) return res.status(404).send({error:'user Not found',code:404});
+            console.log(customerCart._id.toString())
+            var id = customerCart._id.toString();
+            const Cart = await CartModel.findByIdAndDelete(id)
+            await Cart.save();
+            res.status(200)
+        }catch (e){
+            res.status(400).send({error:e.message,code:400});
+        }
+    }
+    
 
 
 }

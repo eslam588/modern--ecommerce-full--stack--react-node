@@ -35,23 +35,36 @@ class Product {
     static getAllProducts = async(req,res) => {
         
         try{
-            const limit = 20;
+            const limit = 21;
             const page = parseInt(req.query.page) || 1;
             const offset = (page - 1) * limit;
-            if(!req.query.keyword){
-            const products = await productModel.find().skip(offset).limit(limit);
-            const productsCount = await productModel.count();
-            const totalPages = Math.ceil(productsCount / limit);
+            if(!req.query.keyword && !req.query.category){
+                const products = await productModel.find().skip(offset).limit(limit);
+                const productsCount = await productModel.count();
+                const totalPages = Math.ceil(productsCount / limit);
+                res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages || 6}}, message:"fetch all products"})
+            }
+            else if(req.query.category){
+                let category = req.query.category
+                console.log(req.query.category)
+                // const products = await productModel.aggregate([{$match:{category:{category}}}]);
+                const products = await productModel.aggregate([{$match:{category:{category}}}]);
+                const productsCount = await products.length;
+                console.log(productsCount)
+                // const totalPages = Math.ceil(productsCount / limit);
 
             res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages || 6}} , message:"fetch all products"})
 
             }
+
             else{
-            let keyword = new RegExp(req.query.keyword,"i")
-            const products = await productModel.aggregate([{$match: {title:keyword}}]).skip(offset).limit(limit);
-            const productsCount = await products.length;
+            let keyword = new RegExp(req.query.keyword.trim(),"i")
+            const productscount = await productModel.aggregate([{$match:{title:keyword}}]);
+            const productsCount = await productscount.length;
+            console.log(productsCount)
+            const products = await productModel.aggregate([{$match:{title:keyword}}]).skip(offset).limit(limit);
             const totalPages = Math.ceil(productsCount / limit);
-            res.status(200).send({apiStatus:true , data:{products,paging:{totalPages:totalPages}}, message:"fetch all products"})
+            res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages}}, message:"fetch all products"})
            }
         } 
         catch(e){

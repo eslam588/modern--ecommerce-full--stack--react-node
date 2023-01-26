@@ -3,8 +3,15 @@
   overflow: hidden;
   box-shadow: 1px -2px 17px 0px rgba(0, 0, 0, 0.38);
   border-radius: 20px;
+  width:300px !important;
+  box-sizing:border-box;
+
 }
 
+.card:hover{
+  border:2px solid RGB(1, 61, 41)
+
+}
 .card .card-sale {
   position: absolute;
   width: 35px;
@@ -74,4 +81,9 @@
   top: 5px;
   left: 0;
   right: 0;
+}
+
+.products .row>*{
+  padding-left:0 !important;
+  padding-right:0 !important
 }

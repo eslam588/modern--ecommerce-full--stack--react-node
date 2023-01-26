@@ -18,7 +18,10 @@ const verifyToken = async (req, res, next) => {
 
 const verifyTokenAndAuthUserAndAdmin = (req, res, next) => {
     verifyToken(req, res, () => {
-      if (req.user.id === req.params.id || req.user.isAdmin) {
+        // console.log(req.user.id);
+        let userId=JSON.parse(req.query.userId)
+        console.log(userId)
+      if (req.user.id == req.body.id || req.user.isAdmin) {
         next();
       } else {
         res.status(403).json("You are not alowed!");

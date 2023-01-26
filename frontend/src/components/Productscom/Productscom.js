@@ -3,12 +3,17 @@ import React from 'react'
 import Product from "../Product/Product"
 import "./Products.css"
 import CircularProgress from '@mui/material/CircularProgress';
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const Productscom = ({products,isLoading, error}) => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   return (
     <div className="products">
         <div className="container">
-            <p>{error}</p>
+            {/* <p>{error}</p> */}
             {
               !isLoading ? (
                 <div className="row">
@@ -21,7 +26,18 @@ const Productscom = ({products,isLoading, error}) => {
                   </p>
             }
            
-               
+           <ToastContainer
+            position="bottom-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />  
         </div>
     </div>
   )

@@ -10,13 +10,15 @@ class Stripe {
                   amount: req.body.amount,
                   currency:"usd"
                 },
-                // (stripeErr,stripeRes) => {
-                //   if (stripeErr) {
-                //     res.status(500).send({ error: stripeErr });
-                //   } else {
-                //     res.status(200).send({ success: stripeRes });
-                //   }
-                // }
+                (stripeErr,stripeRes) => {
+                  if (stripeErr) {
+                    // res.status(500).send({ error: stripeErr });
+                    console.log("yes")
+                  } else {
+                    // res.status(200).send({ success: stripeRes });
+                    console.log("no")
+                  }
+                }
             );
             res.status(200).send({apiStatus:true , message:"payment ok" })
         }

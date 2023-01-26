@@ -1,156 +1,106 @@
-import { createSlice , createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice} from "@reduxjs/toolkit";
 import {logout} from "./authSlice";
-import axios from "axios"
 
 
-export const addtocart = createAsyncThunk('cart/addtocart', async(cartproduct,thunkAPI) => {
-    const {rejectWithValue} = thunkAPI
-    try{
-        const token = JSON.parse(localStorage.getItem("token"));
-        let url = `http://localhost:8000/cart/newcart`
-        const res= await axios.post(url,cartproduct,{
-            headers:{
-                'Authorization': token
-            }
-        })
-        return res
-    }
-    catch(e){
-        return rejectWithValue(e.message)
-    }
-}) 
-
-export const getallcartproducts = createAsyncThunk('cart/getallcartproducts', async(userId,thunkAPI) => {
-    const {rejectWithValue} = thunkAPI
-    try{
-        const token = JSON.parse(localStorage.getItem("token"));
-        let url = `http://localhost:8000/cart/allcartitems/${userId}`
-        const res= await axios.get(url,{
-            headers:{
-                'Authorization': token
-            }
-        })
-        return res
-    }
-    catch(e){
-        return rejectWithValue(e.message)
-    }
-}) 
-
-export const deletecartproduct = createAsyncThunk('cart/deletecartproduct', async(data,thunkAPI) => {
-    const {rejectWithValue} = thunkAPI
-    try{
-        const token = JSON.parse(localStorage.getItem("token"));
-        let url = `http://localhost:8000/cart/deletecart${data.id ? `?id=${data.id}` : ""}${data.productId ? `&productId=${data.productId}` : ""}`
-        const res= await axios.delete(url,{
-            headers:{
-                'Authorization': token
-            }
-        })
-        return res
-    }
-    catch(e){
-        return rejectWithValue(e.message)
-    }
-}) 
 
 
-export const updatecartproduct = createAsyncThunk('cart/updatecartproduct', async(data,thunkAPI) => {
-    const {rejectWithValue} = thunkAPI
-    try{
-        const token = JSON.parse(localStorage.getItem("token"));
-        let url = `http://localhost:8000/cart/updatecart${data.id ? `?id=${data.id}` : ""}${data.productId ? `&productId=${data.productId}` : ""}${data.quantity ? `&quantity=${data.quantity}` : ""}`
-        const res= await axios.patch(url,{
-            headers:{
-                'Authorization': token
-            }
-        })
-        return res
-    }
-    catch(e){
-        return rejectWithValue(e.message)
-    }
-}) 
 
 
-const initialState={cartproducts:[],carttotalprice:0,message:null,totalproductscart:"0"}
+
+let cartStorage = JSON.parse(localStorage.getItem("cart"))
+
+const initialState={
+    itemsInCart: cartStorage?.itemsInCart ? cartStorage?.itemsInCart : [],
+    cartItemsnum: cartStorage?.cartItemsnum ? cartStorage?.cartItemsnum : 0,
+    totalCount: cartStorage?.totalCount ? cartStorage?.totalCount : 0,
+}
 
 const cartSlice = createSlice({
     name:"cart",
     initialState,
-    extraReducers: (builder) => {
-        console.log(builder);
-         builder.addCase(logout,(state,action)=> {
-            console.log(state);
-            state.cartproducts=[]
-         })
+    reducers:{
+        addToCart: (state, action) => {
+            const itemInCartIndex = state.itemsInCart.findIndex((item) => item._id === action.payload._id);
+            if(itemInCartIndex >= 0)
+            {   
+                state.itemsInCart[itemInCartIndex].quantity +=1
+                state.cartItemsnum +=1
+                state.totalCount += state.itemsInCart[itemInCartIndex].price
+            }
+            else {
+                let _id= action.payload._id
+                let title =action.payload.title
+                let price = action.payload.price
+                let image = action.payload.images[0]
+                let updatedproduct = {_id,title,price,image,quantity:1}
+                state.itemsInCart.push(updatedproduct);
+                state.cartItemsnum += 1
+                state.totalCount +=updatedproduct.price*updatedproduct.quantity
+            }
+            let {itemsInCart,cartItemsnum,totalCount} = state
+            localStorage.setItem("cart",JSON.stringify({itemsInCart,cartItemsnum,totalCount}))
+        },
+        incrementCart:(state, action) =>{
+            const itemInCartIndex = state.itemsInCart.findIndex((item) => item._id == action.payload._id);
+            if(itemInCartIndex >= 0){
+                state.itemsInCart[itemInCartIndex].quantity +=1
+                state.cartItemsnum +=1
+                state.totalCount += state.itemsInCart[itemInCartIndex].price
+                let {itemsInCart,cartItemsnum,totalCount} = state
+                localStorage.setItem("cart",JSON.stringify({itemsInCart,cartItemsnum,totalCount}))    
+            }
+            else
+            {
+                let _id= action.payload._id
+                let title =action.payload.title
+                let price = action.payload.price
+                let image = action.payload.images[0]
+                let updatedproduct = {_id,title,price,image,quantity:1}
+                state.itemsInCart.push(updatedproduct);
+                state.cartItemsnum += 1
+                state.totalCount +=updatedproduct.price*updatedproduct.quantity
+            }
+                
+        },
+        decrementCart:(state, action) =>{
+            const itemInCartIndex = state.itemsInCart.findIndex((item) => item._id === action.payload._id);
+            if(state.itemsInCart[itemInCartIndex].quantity >= 1){
+                state.itemsInCart[itemInCartIndex].quantity -=1
+                state.cartItemsnum -=1
+                state.totalCount -= state.itemsInCart[itemInCartIndex].price
+                let {itemsInCart,cartItemsnum,totalCount} = state
+                localStorage.setItem("cart",JSON.stringify({itemsInCart,cartItemsnum,totalCount}))
+                if(state.itemsInCart[itemInCartIndex].quantity < 1){
+                    const updatedItemsCart = state.itemsInCart.filter((item) => item._id !== action.payload._id);
+                    state.itemsInCart=updatedItemsCart;
+                    let {itemsInCart,cartItemsnum,totalCount} = state
+                    localStorage.setItem("cart",JSON.stringify({itemsInCart,cartItemsnum,totalCount}))
+                }
+            }  
+        },
+        deleteFromCart:(state,action) => {
+            const itemInCartIndex = state.itemsInCart.findIndex((item) => item._id === action.payload._id);
+            state.cartItemsnum -= state.itemsInCart[itemInCartIndex].quantity;
+            state.totalCount -= state.itemsInCart[itemInCartIndex].price*state.itemsInCart[itemInCartIndex].quantity
+            state.itemsInCart.splice(itemInCartIndex,1); 
+            let {itemsInCart,cartItemsnum,totalCount} = state
+            localStorage.setItem("cart",JSON.stringify({itemsInCart,cartItemsnum,totalCount}))
+        },
+        removeCart:(state) => {    
+                  state.itemsInCart= []
+                  state.cartItemsnum=0
+                  state.totalCount=0
+                  let {itemsInCart,cartItemsnum,totalCount} = state
+                  localStorage.setItem("cart",JSON.stringify({itemsInCart,cartItemsnum,totalCount}))
+        },
     },
     extraReducers:{
-        [addtocart.pending]: (state,action) => {
-            state.error=null
-        },
-        [addtocart.fulfilled]: (state,action) => {
-            state.data=action.payload.data.data
-            state.totalproductscart=action.payload.data.totalItems
-        },
-        [addtocart.rejected]: (state,action) => {
-            state.error=action.payload    
-        },
-
-        /////////////////////////////
-
-        [getallcartproducts.pending]: (state,action) => {
-            state.isLoading=true
-            state.error=null
-
-        },
-        [getallcartproducts.fulfilled]: (state,action) => {
-            state.isLoading=false
-            state.carttotalprice=action.payload.data.cartPrice
-            state.cartproducts=action.payload.data.products
-            state.totalproductscart=action.payload.data.totalItems
-        },
-        [getallcartproducts.rejected]: (state,action) => {
-            state.isLoading=false
-            state.error=action.payload    
-        },
-
-        
-        ////////////////////////////
-        
-        [deletecartproduct.pending]: (state,action) => {
-            state.isLoading=true
-            state.error=null
-
-        },
-        [deletecartproduct.fulfilled]: (state,action) => {
-            state.isLoading=false
-            state.cartproducts=action.payload.data.products
-            state.carttotalprice=action.payload.data.cartPrice
-            state.totalproductscart=action.payload.data.totalItems
-        },
-        [deletecartproduct.rejected]: (state,action) => {
-            state.isLoading=false
-            state.error=action.payload    
-        },
-
-        ///////////////////////////
-        [updatecartproduct.pending]: (state,action) => {
-            state.isLoading=true
-            state.error=null
-
-        },
-        [updatecartproduct.fulfilled]: (state,action) => {
-            state.isLoading=false
-            state.cartproducts=action.payload.data.products
-            state.carttotalprice=action.payload.data.cartPrice
-            state.totalproductscart=action.payload.data.totalItems
-        },
-        [updatecartproduct.rejected]: (state,action) => {
-            state.isLoading=false
-            state.error=action.payload    
-        },
+        [logout]:(state,action) => {
+            state.totalproductscart="0"
+       },
     }
 })
 
+
+export const {addToCart,incrementCart,decrementCart,deleteFromCart,removeCart} = cartSlice.actions;
 export default cartSlice.reducer;

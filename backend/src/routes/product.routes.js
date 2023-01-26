@@ -10,7 +10,7 @@ router.delete("/deleteproduct/:id",Product.deleteProduct)
 router.post("/addcomment/:id",verifyToken,Product.addComment);
 router.get("/getallcomments/:id",Product.getAllComments);
 router.patch("/updatecomment/:id",verifyToken,Product.updateComment);
-router.delete("/deletecomment/:id",verifyTokenAndAuthUserAndAdmin,Product.deleteComment);
+router.delete("/deletecomment/:id",verifyToken,Product.deleteComment);
 module.exports=router;
 
 

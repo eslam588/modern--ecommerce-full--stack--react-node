@@ -3,9 +3,10 @@ const Cart = require("../controllers/cart.controller")
 const {verifyToken} =require("../middleware/auth.middleware")
 
 router.post("/newcart",verifyToken,Cart.addCartItem);
-router.get("/allcartitems/:id",verifyToken,Cart.getAllCartItems);
-router.patch("/updatecart",verifyToken,Cart.updateCart);
-router.delete("/deletecart",verifyToken,Cart.deleteCartProduct);
+router.get("/allcartitems/:id",Cart.getAllCartItems);
+router.patch("/updatecart",Cart.updateCart);
+router.delete("/deletecart",Cart.deleteCartProduct);
+router.delete("/deletecartuser/:id",Cart.deleteCartProductsForUser);
 
 module.exports=router;
 

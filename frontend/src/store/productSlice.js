@@ -3,10 +3,10 @@ import axios from "axios"
 
 //get all products
 
-export const getproducts = createAsyncThunk('product/getproducts', async(page,thunkAPI) => {
+export const getproducts = createAsyncThunk('product/getproducts', async({keyword,page,category},thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
-        let url = `http://localhost:8000/product/getallproducts${page ? `?page=${page}`: ""}`
+        let url = `http://localhost:8000/product/getallproducts${page ? `?page=${page}`: ""}${keyword ? `&keyword=${keyword}`: ""}${category ? `&category=${category}`: ""}`
         const res= await axios.get(url,{
             header:{
                 'Content-type': 'application/json; charset=UTF-8'
@@ -19,31 +19,31 @@ export const getproducts = createAsyncThunk('product/getproducts', async(page,th
     }
 }) 
 
-export const filterproducts = createAsyncThunk('product/filterproducts', async(keyword,thunkAPI) => {
-    const {rejectWithValue} = thunkAPI
-    try{
-        let url = `http://localhost:8000/product/getallproducts${keyword ? `?keyword=${keyword}`: "" }`
-        const res= await axios.get(url,{
-            header:{
-                'Content-type': 'application/json; charset=UTF-8'
-            }
-        })
-        return res
-    }
-    catch(e){
-        return rejectWithValue(e.message)
-    }
-})
+// export const filterproducts = createAsyncThunk('product/getproducts', async(keyword,thunkAPI) => {
+//     const {rejectWithValue} = thunkAPI
+//     try{
+//         let url = `http://localhost:8000/product/getallproducts${keyword ? `?keyword=${keyword}`: ""}${page ? `?page=${page}`: ""}`
+//         const res= await axios.get(url,{
+//             header:{
+//                 'Content-type': 'application/json; charset=UTF-8'
+//             }
+//         })
+//         return res
+//     }
+//     catch(e){
+//         return rejectWithValue(e.message)
+//     }
+// })
 
 
 export const productsreviews = createAsyncThunk('product/productsreviews', async(data,thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
-        console.log(data);
+        const token = JSON.parse(localStorage.getItem("token"));
         let url = `http://localhost:8000/product/addcomment/${data.productId}`
         const res= await axios.post(url, data.reviews ,{
-            header:{
-                'Content-type': 'application/json; charset=UTF-8'
+            headers:{
+                'Authorization': token
             }
         })
         return res
@@ -57,10 +57,11 @@ export const productsreviews = createAsyncThunk('product/productsreviews', async
 export const getallreviews = createAsyncThunk('product/getallreviews', async(productId,thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
+        const token = JSON.parse(localStorage.getItem("token"));
         let url = `http://localhost:8000/product/getallcomments/${productId}`
         const res= await axios.get(url,{
-            header:{
-                'Content-type': 'application/json; charset=UTF-8'
+            headers:{
+                'Authorization': token
             }
         })
         return res
@@ -75,11 +76,11 @@ export const getallreviews = createAsyncThunk('product/getallreviews', async(pro
 export const deletereview = createAsyncThunk('product/deletereview', async(data,thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
-        console.log(data);
+        const token = JSON.parse(localStorage.getItem("token"));
         let url = `http://localhost:8000/product/deletecomment/${data.productId}${data.reviewId ? `?reviewId=${data.reviewId}`: "" }`
         const res= await axios.delete(url,{
-            header:{
-                'Content-type': 'application/json; charset=UTF-8'
+            headers:{
+                'Authorization': token
             }
         })
         return res
@@ -94,10 +95,11 @@ export const deletereview = createAsyncThunk('product/deletereview', async(data,
 export const updatereview = createAsyncThunk('product/updatereview', async(productId,thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
+        const token = JSON.parse(localStorage.getItem("token"));
         let url = `http://localhost:8000/product/updatecomment/${productId}`
         const res= await axios.patch(url,{
-            header:{
-                'Content-type': 'application/json; charset=UTF-8'
+            headers:{
+                'Authorization': token
             }
         })
         return res
@@ -132,19 +134,19 @@ const productSlice= createSlice({
         
         // filterproducts
 
-        [filterproducts.pending]: (state,action) => {
-            state.isLoading=true
-            state.error=null
+        // [filterproducts.pending]: (state,action) => {
+        //     state.isLoading=true
+        //     state.error=null
 
-        },
-        [filterproducts.fulfilled]: (state,action) => {
-            state.isLoading=false
-            state.data=action.payload.data.data
-        },
-        [filterproducts.rejected]: (state,action) => {
-            state.isLoading=false
-            state.error=action.payload    
-        },
+        // },
+        // [filterproducts.fulfilled]: (state,action) => {
+        //     state.isLoading=false
+        //     state.data=action.payload.data.data
+        // },
+        // [filterproducts.rejected]: (state,action) => {
+        //     state.isLoading=false
+        //     state.error=action.payload    
+        // },
 
         // reviews
         [productsreviews.pending]: (state,action) => {

@@ -1,6 +1,11 @@
 .footer {
-  background-color: RGB(1, 61, 41);
-  color: white;
+  background-color: 	#f5f5f5;
+  color: black;
   text-align: center;
   padding: 10px;
+}
+
+.footer hr{
+  border-top:3px solid  green !important;
+  opacity:1 !important;
 }

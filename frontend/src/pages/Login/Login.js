@@ -5,9 +5,15 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {NavLink , useNavigate} from "react-router-dom"
 import {useDispatch, useSelector} from 'react-redux';
-import {loginuser} from "../../store/authSlice"
+import {loginuser,loggedIn} from "../../store/authSlice"
+import CircularProgress from '@mui/material/CircularProgress';
 import "./Login.css"
+
+
+
+
 const Login = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 
  const {error} = useSelector((state)=> state.auth)
  const dispatch = useDispatch();
@@ -21,8 +27,11 @@ const [values , setValues] = useState({
 });
 const [errors , setErrors] = useState({})
 const [submitted, setSubmitted] = useState(false)
+const [serverValidation , setServerValidation]=useState(false)
 const [focusedemail , setFocusedEmail] = useState(false);
 const [focusedpass , setFocusedPass] = useState(false);
+const [loginsuccess,setLoginSuccess]= useState(false)
+
 
 
 // update values and show errors in case change ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -80,19 +89,23 @@ const validate = () => {
 const onhandlesubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true)
-    let errors = validate();
-    if(errors == null){
+    let errorss = validate();
+    if(errorss == null){
       let res = await dispatch(loginuser(values))
-
-      if(res.payload.data.message=="success"){
-          setValues({ 
-            email:"", 
-            password:"",
-        })
+      if(res?.payload?.data?.message == "success"){
+        setValues({ email:"",password:""})
+        setServerValidation(false)
         setSubmitted(false)
         setFocusedEmail(false)
         setFocusedPass(false)
-        navigate("/")
+        setLoginSuccess(true)
+        setTimeout(() => {
+          navigate("/")
+          dispatch(loggedIn());
+        }, 2000);
+      }
+      else{
+         setServerValidation(true)
       }
     }
     else{
@@ -107,7 +120,7 @@ return (
           
           <h3 className="text-center mb-4">Sign In</h3>    
           {
-              submitted  && error != null  && <p className="text-danger  fs-5 m-4 text-center">invalid email or password</p>
+             serverValidation  && <p className="text-danger  fs-5 m-4 text-center">invalid email or password</p> 
           } 
           <Box component="form" sx={{'& > :not(style)': { m: 1, width: '35ch' },}} noValidate autoComplete="off">
             <TextField id="filled-basic" label="Email Address" variant="filled" name="email" value={values.email} 
@@ -131,7 +144,11 @@ return (
                {errors.password}
              </p>
           ): <p className="p-2"></p>}
-          <Button variant="contained" color="success" type="submit" fullWidth="true" sx={{my:2}}  >Sign In</Button>
+          <Button variant="contained" color="success" type="submit" fullWidth="true" sx={{my:2}}  >
+            {
+                loginsuccess ? <CircularProgress  disableShrink  size="25px" color="inherit"/> : "Sign In"
+            }
+           </Button>
           <p className="text-center">if dont Registered ? <NavLink to="/register"><span className="text-light">Register Now</span></NavLink></p>
       </form> 
   </div>

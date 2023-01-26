@@ -8,7 +8,7 @@ import "./Profile.css"
 import {updateuserdata,uploaduserimage} from "../../store/authSlice"
 
 const Profile = () => {
-
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   const {userData} = useSelector((state)=> state.auth)
   const dispatch= useDispatch();
   const [updatedvalues , setUpdatedValues] = useState({

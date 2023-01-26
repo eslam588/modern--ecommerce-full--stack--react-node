@@ -1,30 +1,41 @@
-import React ,{useRef} from 'react'
+import React ,{useRef,useEffect,useState} from 'react'
 import {useLocation} from 'react-router-dom';
 import Button from '@mui/material/Button';
 import "./SingleProduct.css"
 import {useDispatch,useSelector} from 'react-redux';
 import {useNavigate} from "react-router-dom";
-import {addtocart} from '../../store/cartSlice'
 import Reviews from '../../components/Reviews/Reviews';
+import {toast,ToastContainer } from 'react-toastify';
+import {addToCart,incrementCart,decrementCart} from '../../store/cartSlice'
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
 const SingleProduct = () => {
+
   const location = useLocation();
   const product = location.state?.product
   const {isLoggedIn} = useSelector((state)=> state.auth)
-  console.log(isLoggedIn);
+  const {itemsInCart} = useSelector((state) => state.cart);
+  const [quant,setQuant] = useState(0)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let userId =JSON.parse(localStorage.getItem('userId'));
-  // let token = JSON.parse(localStorage.getItem('token'))
+  
 
-  const addToCart =(product_id) => {
-    if(!isLoggedIn){
-      navigate("/login")
+  useEffect(()=>{
+    if(itemsInCart?.length > 0){
+      let cartProduct = itemsInCart.find(item => item._id == product._id)
+      setQuant(cartProduct?.quantity)
     }
-    dispatch(addtocart({"id":userId,"productId":product_id,"quantity":1})) 
+  },[product,dispatch,itemsInCart])
+ 
+  
+  const addtocart =(product) => {
+    dispatch(addToCart(product))
+    toast.success('Added To Cart Successfly');
   }
+
 
   const imgDiv = useRef();
 
@@ -36,26 +47,24 @@ const SingleProduct = () => {
 }
 
   return (
-    <div className='single-product container'>
+    <div className='single-product container pt-3'>
 
        {/* product details ---------------------------------------------------------------------------------  */}
 
       <div className="details mx-auto">
-         <h3 className="title p-2 mb-2 text-center">{product.title}</h3>
+         <h3 className="title p-2 mb-2 text-center  mb-4">{product.title}</h3>
          <div className="details-box d-lg-flex justify-content-between">
              <div className="product-img"  style={{backgroundImage:`url(${product.images[0]})`}} 
                 onMouseMove={handleMouseMove}  ref={imgDiv} onMouseLeave = { () => imgDiv.current.style.backgroundPosition = `center`}>
              </div>
              <div className="product-details mt-4">
-                <p>{product.description}</p>
-                <p>{product.category.name}</p>
-                <p>{product.price}</p>
-                {/* <div className="quantity m-2 mb-3">
-                  <button className="bg-success text-light">+</button>
-                  <span className="p-3">0</span>
-                  <button className="bg-success text-light" >-</button>
-                </div> */}
-                <div className="product-images mb-5">
+                <p><span className='fw-bold'>Description</span> : {product.description}</p>
+                <p><span className='fw-bold'>category</span> : {product.category.name}</p>
+                <p> <span className='fw-bold'>Price</span> : {product.price} $</p>
+                <button type="button" onClick={() => dispatch(incrementCart(product))} >+</button>
+                <span className="mx-3 fs-6  ">{quant || 0}</span>
+                <button type="button" onClick={()=> dispatch(decrementCart(product))}>-</button>
+                <div className="product-images mb-4 mt-3">
                 {   
                     product.images.length>1 &&  product.images.map((img,index)=>{
                     return(
@@ -64,10 +73,23 @@ const SingleProduct = () => {
                  })
                 }
                  </div>
-                <Button variant="outlined" sx={{backgroundColor:"RGB(1, 61, 41)" , color:"white" , '&:hover': {background: 'light' , color:"black" , borderColor:"RGB(1, 61, 41)" }}} onClick={() => addToCart(product._id)}>Add To Cart</Button>
+                <Button variant="outlined" sx={{backgroundColor:"RGB(1, 61, 41)" , color:"white" , '&:hover': {background: 'light' , color:"black" , borderColor:"RGB(1, 61, 41)" }}}  onClick={() => addtocart(product)} >Add To Cart</Button>
+               
              </div>
          </div>
       </div>  
+      <ToastContainer
+            position="bottom-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />  
 
       {/*reviews section ------------------------------------------------------------------------------------- */}
       

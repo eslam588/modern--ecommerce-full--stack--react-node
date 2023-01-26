@@ -6,10 +6,12 @@ import Button from '@mui/material/Button';
 import {NavLink , useNavigate} from "react-router-dom"
 import {useDispatch, useSelector} from 'react-redux';
 import {registeruser} from "../../store/authSlice"
+import CircularProgress from '@mui/material/CircularProgress';
 import "./Register.css";
 
 
 const Register = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   const {error,messagereg,messageexit} = useSelector((state)=> state.auth)
   const dispatch = useDispatch();
 
@@ -18,7 +20,6 @@ const Register = () => {
     username: "", 
     email:"", 
     password:"",
-    // confirmpassword:"",
   });
   const [errors , setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
@@ -27,7 +28,6 @@ const Register = () => {
   const [focusedusername , setFocusedUsername] = useState(false);
   const [focusedemail , setFocusedEmail] = useState(false);
   const [focusedpass , setFocusedPass] = useState(false);
-  // const [focusedconpass , setFocusedConPass] = useState(false);
   let navigate = useNavigate();
 
   // update values and show errors in case change ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -44,7 +44,7 @@ const Register = () => {
   function validation(user) {
     // const exp = values.password;
     let schema = joi.object({
-    // username ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    // name,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
     username:joi.string().required().min(6).max(20)
     .pattern(/^[A-Za-z]/)
     .messages({"string.empty":"Please enter your username",
@@ -68,15 +68,7 @@ const Register = () => {
       "string.pattern.base":"please enter valid password",
       "string.min": "Min length must be at least 6 char",
       "string.max": "Max length must be at less than 20 char"
-    }),
-
-    //confirm password ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-    // confirmpassword : joi.string().required().min(6).max(20)
-    // .pattern(new RegExp(exp))
-    // .messages({
-    //   "string.pattern.base":"password dont matched",
-    //   "string.empty": "Please enter your password",
-    // }),
+    })
     });
     return schema.validate(user , { abortEarly: false });
   }
@@ -109,20 +101,18 @@ const Register = () => {
             let res = await dispatch(registeruser(values))
             if(!(res.payload.data.mesg == "user exist already")){
               setValues({
-                username: "", 
+                name: "", 
                 email:"", 
                 password:"",
-                confirmpassword:""
               })
               setRegisterSuccess(true)
               setSubmitted(false)
               setFocusedUsername(false);
               setFocusedEmail(false);
               setFocusedPass(false)
-              // setFocusedConPass(false)
               setTimeout(() => {
                   navigate("/login")
-              }, 3000);   
+              }, 2000);   
             }  
             else{
               setExistsUser(true)
@@ -146,7 +136,7 @@ const Register = () => {
                existsuser &&   <p className=" text-center text-danger fs-6  p-1">{messageexit}</p>
             }
             <Box component="form" sx={{'& > :not(style)': { m: 1, width: '35ch' }}} noValidate autoComplete="off" >
-              <TextField id="filled-basic" label="Username" variant="filled" name="username" value={values.username} 
+              <TextField id="filled-basic" label="Name" variant="filled" name="username" value={values.name} 
               onChange={onchange} className={( submitted || focusedusername) && errors.username ? "border border-2 border-danger" : ""}  
               onFocus={() => setFocusedUsername(true)}
               onBlur={() => setFocusedUsername(false)} />
@@ -178,20 +168,9 @@ const Register = () => {
                  {errors.password}
                </p>
             ): <p className="p-2"></p>}
-            {/* <Box component="form" sx={{'& > :not(style)': { m: 1, width: '35ch' },}} noValidate autoComplete="off">
-              <TextField id="filled-basic" label="Confirm Password" variant="filled" name="confirmpassword" type="password" 
-               value={values.confirmpassword} onChange={onchange} className={(submitted || focusedconpass) && 
-               errors.confirmpassword ? "border border-2 border-danger" : ""} onFocus={() => setFocusedConPass(true)} 
-               onBlur={() => setFocusedConPass(false)}/>
-            </Box>
-            {(submitted || focusedconpass) && errors.confirmpassword ? (
-              <p className="text-danger">
-                 {errors.confirmpassword}
-               </p>
-            ): <p className="p-2"></p>} */}
             <Button variant="contained" color="success" type="submit" fullWidth="true" sx={{my:2}}>
               {
-                registersuccess ? "loading...."  : "create my new account"
+                registersuccess ? <CircularProgress  disableShrink  size="25px" color="inherit"/> : "create my new account"
               }
               </Button>
             <p className="text-center">alReady Registered ? <NavLink to="/login"><span className="text-light">Login Now</span></NavLink></p>

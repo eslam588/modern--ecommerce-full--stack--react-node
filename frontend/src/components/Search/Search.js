@@ -10,11 +10,10 @@ const Search = ({setKeyword,handlesubmit,keyword}) => {
 
 
   return (
-    <div className="searchinput mt-5">
-        <div className="container">
+    <div className="searchinput text-center mx-2">
             <Form onSubmit={handlesubmit} >
-                <Form.Group as={Row}>
-                    <Col sm="6">
+                <Form.Group as={Row} className="d-flex justify-content-center ms-4">
+                    <Col md="6">
                         <InputGroup className="mb-3">
                                 <Form.Control placeholder="search a product by name" onChange={(e)=> setKeyword(e.target.value.trim())} name="search" value={keyword} />
                                 <Button type="submit" variant="outline-secondary" id="button-addon2" style={{backgroundColor:"RGB(1, 61, 41)" , color:"white"}}>search</Button>
@@ -22,8 +21,6 @@ const Search = ({setKeyword,handlesubmit,keyword}) => {
                     </Col>
                 </Form.Group>
             </Form>
-        </div>
-      
     </div>
   )
 }

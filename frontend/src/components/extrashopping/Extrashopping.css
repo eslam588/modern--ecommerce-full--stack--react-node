@@ -1,0 +1,45 @@
+
+.section1 .box{
+    position: relative;
+    z-index: 1;
+    background-color:lightgrey
+  }
+  .section1 .box h3 , .section1 .box p{
+    color: rgb(50, 46, 46);
+  }
+  
+  .section1 .box::before{
+    content: "";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color:#ffffff;
+    top: 100%;
+    z-index: -1;
+    transition: all 0.5s;
+    
+  }
+.section1 .box:hover::before{
+    background-color:RGB(1, 61, 41);
+    top:0;
+    border-radius:5px;
+  }
+  .section1 .box .iconn{
+    color:RGB(1, 61, 41);
+    font-size:40px;
+  }
+
+  .section1 .box:hover .iconn{
+    color:#ffffff ;
+  }
+  
+  .section1 .box:hover h3{
+    color:#ffffff ;
+  }
+  .section1 .box:hover p{
+    color:#ffffff ;
+  }
+ 
+ 
+  

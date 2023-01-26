@@ -3,7 +3,7 @@ import {CardElement,Elements,useStripe,useElements} from '@stripe/react-stripe-j
 import './Payment.css'
 
 const Payment = () => {
-    
+window.scrollTo({ top: 0, behavior: 'smooth' })  
 const stripe = useStripe();
 const elements = useElements();
 

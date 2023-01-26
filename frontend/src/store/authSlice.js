@@ -21,10 +21,8 @@ export const loginuser = createAsyncThunk('auth/loginuser' , async(data, thunkAP
     try{
         const res=await axios.post("http://localhost:8000/user/login",data)
         if(res.data?.message === "success"){
-        
             localStorage.setItem("token", JSON.stringify(res.data.token));
             localStorage.setItem("userId", JSON.stringify(res.data.data._id));
-            console.log(res);
             return res 
         }  
     }
@@ -90,7 +88,7 @@ export const uploaduserimage = createAsyncThunk('auth/uploaduserimage' , async(d
 }) 
 
 const initialState = {
-  isLoggedIn:false,
+  isLoggedIn: JSON.parse(localStorage.getItem("islogged")) || false,
   error: null,
   userData:{},
   token:JSON.parse(localStorage.getItem("token")),
@@ -107,9 +105,14 @@ const authSlice= createSlice({
         state.isLoggedIn=false;
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
+        localStorage.removeItem("islogged");
         state.userData={}
         
       },
+      loggedIn : (state)=> {
+        state.isLoggedIn=true;
+        localStorage.setItem("islogged",JSON.stringify(state.isLoggedIn))
+      }
     },
     extraReducers:{
         // register
@@ -132,7 +135,6 @@ const authSlice= createSlice({
         },
         [loginuser.fulfilled]: (state,action) => {
             state.error=null;
-            state.isLoggedIn=true;
             state.token=action.payload.data.token; 
         },
         [loginuser.rejected]: (state,action) => {
@@ -182,5 +184,5 @@ const authSlice= createSlice({
     }
 })
 
-export const {logout} =  authSlice.actions; 
+export const {logout,loggedIn} =  authSlice.actions; 
 export default authSlice.reducer;

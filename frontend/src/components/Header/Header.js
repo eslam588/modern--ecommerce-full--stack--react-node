@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from "react"
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -42,16 +43,19 @@ function ResponsiveAppBar() {
   let navigate = useNavigate();
 
   const {userData,isLoggedIn} = useSelector((state)=> state.auth)
-  const totalproductscart = useSelector((state) => state.cart.totalproductscart);
+  const cartItemsnum = useSelector((state) => state.cart.cartItemsnum);
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [showmenu , setShowMenu] = useState(false);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
+    setShowMenu(true)
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
+    setShowMenu(true)
   };
 
   const handleCloseNavMenu = () => {
@@ -60,23 +64,23 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    setShowMenu(false)
   };
 
 
   const onLogout = () => {
     setTimeout(() => {
       dispatch(logout());
-      navigate("/login")
+      navigate("/")
     },500);
     
   };
 
   return (   
-    <AppBar position="static">
+    <AppBar>
       <Container maxWidth="xl">
          {/* <Navbar /> */}
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <NavLink to="/home">
           <Typography
             variant="h6"
@@ -92,7 +96,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            Shopcart
+            Fashionista
           </Typography>
           </NavLink>
 
@@ -160,7 +164,7 @@ function ResponsiveAppBar() {
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}
                 >
-                 <NavLink to={`/${page}/`}  className={({ isActive }) =>
+                 <NavLink to={`/${page}`}  className={({ isActive }) =>
                  isActive ? "activelink" : "" }>
                      {page}
                  </NavLink>
@@ -168,15 +172,21 @@ function ResponsiveAppBar() {
                ))}
           </Box>
           {
-           isLoggedIn && (
+           (
           <Box sx={{ flexGrow: 0 }}>
+            { isLoggedIn && (
             <Tooltip title="Open settings">
+              
               <IconButton onClick={handleOpenUserMenu} sx={{p: 0 }}>
                 <img src={`http://localhost:8000/${userData?.profilePic}`} width="40px" height="40px" alt="userimage" />
                 <span className='username'>{userData?.username}</span>
               </IconButton>
             </Tooltip>
-            <Menu
+             )
+            }
+            {
+              showmenu && (
+                <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
@@ -203,6 +213,11 @@ function ResponsiveAppBar() {
                   </NavLink>
               </MenuItem>
             </Menu>
+              )
+            }
+              
+           
+           
           </Box>
             )
           }
@@ -221,7 +236,7 @@ function ResponsiveAppBar() {
           }
           <IconButton aria-label="cart"  sx={{fontSize:"26px", ml:3}}>
             <NavLink to="/cart">
-              <StyledBadge badgeContent={totalproductscart || "0"} color="secondary">
+              <StyledBadge badgeContent={cartItemsnum || "0"} color="secondary">
                 <ShoppingCartIcon />
               </StyledBadge>
             </NavLink>

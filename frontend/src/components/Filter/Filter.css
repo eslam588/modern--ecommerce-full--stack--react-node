@@ -1,0 +1,13 @@
+.catalog{
+    padding:50px
+}
+
+.catalog .catalog-filter .filter-box{
+    margin-left:10px;
+}
+
+.catalog .catalog-filter .checkbox-filter{
+   margin-top:20px;
+   margin-bottom:20px
+    
+}
