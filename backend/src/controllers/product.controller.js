@@ -44,18 +44,18 @@ class Product {
                 const totalPages = Math.ceil(productsCount / limit);
                 res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages || 6}}, message:"fetch all products"})
             }
-            else if(req.query.category){
-                let category = req.query.category
-                console.log(req.query.category)
-                // const products = await productModel.aggregate([{$match:{category:{category}}}]);
-                const products = await productModel.aggregate([{$match:{category:{category}}}]);
-                const productsCount = await products.length;
-                console.log(productsCount)
-                // const totalPages = Math.ceil(productsCount / limit);
+            // else if(req.query.category){
+            //     let category = req.query.category
+            //     console.log(req.query.category)
+            //     // const products = await productModel.aggregate([{$match:{category:{category}}}]);
+            //     const products = await productModel.aggregate([{$match:{category:{category}}}]);
+            //     const productsCount = await products.length;
+            //     console.log(productsCount)
+            //     // const totalPages = Math.ceil(productsCount / limit);
 
-            res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages || 6}} , message:"fetch all products"})
+            // res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages || 6}} , message:"fetch all products"})
 
-            }
+            // }
 
             else{
             let keyword = new RegExp(req.query.keyword.trim(),"i")

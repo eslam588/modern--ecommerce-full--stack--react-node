@@ -51,7 +51,7 @@ function ResponsiveAppBar() {
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
-    setShowMenu(true)
+    // setShowMenu(true)
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);

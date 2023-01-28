@@ -18,3 +18,12 @@
     top:-40px;
     right:0;
 }
+
+.overlayView>a.testMode{
+    opacity: 0 !important;
+    top:0
+}
+
+.overlayView .brandingLogoView{
+    opacity: 0 !important
+}

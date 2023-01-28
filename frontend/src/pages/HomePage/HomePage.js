@@ -14,7 +14,7 @@ const HomePage = () => {
   let userId =JSON.parse(localStorage.getItem('userId'));
 
   useEffect(() => {
-    dispatch(getproducts())
+    dispatch(getproducts({}))
     dispatch(getuserdata())
   }, [])
 

@@ -28,7 +28,6 @@ const Cart = () => {
   // let orderProducts = cartproducts.map(product => ({productId:product._id , productquantiy:product.quantity})) 
   let makeOrder = async () => {
     if(userId) {
-      console.log("eslam");
       //await dispatch(addorder({userId,"products":orderProducts,"totalproducts":totalproductscart,"totalprice":carttotalprice}))
     }
     else{
@@ -96,6 +95,7 @@ const Cart = () => {
               <h3>Order Details</h3>
               <p className="text-success fs-4 my-4">Total Products : {cartItemsnum} </p>
               <p className="text-success fs-4 my-4">Total Price : {totalCount}$</p>
+              <button className="btn btn-primary mt-3" onClick={makeOrder}>check Out</button> 
               <StripeCheckout
               name="Lama Shop"
               image="https://avatars.githubusercontent.com/u/1486366?v=4"
@@ -106,8 +106,6 @@ const Cart = () => {
               token={onToken}
               stripeKey={KEY}
             >
-              
-             <button className="btn btn-primary mt-3" onClick={makeOrder}>check Out</button> 
             </StripeCheckout>
               
             </div>

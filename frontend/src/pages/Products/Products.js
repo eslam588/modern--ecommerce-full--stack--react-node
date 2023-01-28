@@ -10,6 +10,8 @@ const Products = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
   //get all products
   const {data,isLoading, error} = useSelector((state)=> state.product)
+
+  console.log(isLoading)
   const dispatch= useDispatch();
   const [page , setPage] = useState(1)
   const [keyword , setKeyword] =useState("")
@@ -36,7 +38,6 @@ const Products = () => {
    },[page])
 
    const filterSelect = useCallback((category) => {
-    console.log(category)
     dispatch(getproducts({keyword,page,category}))
    })
 

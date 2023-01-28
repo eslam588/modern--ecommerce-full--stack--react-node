@@ -49,8 +49,8 @@ function App() {
           <Route path="/cart" element={<Cart />} />  
           <Route path="/aboutus" element={<AboutUs />} />  
           <Route path="/profile" element={isLoggedIn ?<Profile /> : <Login/>} />  
-          <Route path="/payment" element={isLoggedIn ?<Payment /> : <Login/>} />  
-          <Route path="/success" element={isLoggedIn ?<Paymentsuccess /> : <Login/>} />  
+          {/* <Route path="/payment" element={isLoggedIn ?<Payment /> : <Login/>} />   */}
+          {/* <Route path="/success" element={isLoggedIn ?<Paymentsuccess /> : <Login/>} />   */}
 
           <Route path="*" element={isLoggedIn ? <Error/> : <Login/>}/>
         </Routes>
