@@ -1,5 +1,6 @@
 const productModel= require('../models/product.model');
 
+
 class Product {
 
     // create product ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -32,39 +33,34 @@ class Product {
 
     // get all products ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
     
-    static getAllProducts = async(req,res) => {
-        
+    static getAllProducts = async(req,res) => {  
         try{
-            const limit = 21;
+            const limit = 9;
             const page = parseInt(req.query.page) || 1;
             const offset = (page - 1) * limit;
-            if(!req.query.keyword && !req.query.category){
+            if(!req.query.keyword && !req.query.catName){
                 const products = await productModel.find().skip(offset).limit(limit);
                 const productsCount = await productModel.count();
                 const totalPages = Math.ceil(productsCount / limit);
-                res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages || 6}}, message:"fetch all products"})
+                res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages}}, message:"fetch all products"})
             }
-            // else if(req.query.category){
-            //     let category = req.query.category
-            //     console.log(req.query.category)
-            //     // const products = await productModel.aggregate([{$match:{category:{category}}}]);
-            //     const products = await productModel.aggregate([{$match:{category:{category}}}]);
-            //     const productsCount = await products.length;
-            //     console.log(productsCount)
-            //     // const totalPages = Math.ceil(productsCount / limit);
+            else if(req.query.catName && !req.query.keyword){
+                let catName = req.query.catName
+                let cat = catName.split(",")
+                const products = await productModel.find({"categoryName" : {$in : cat}}).skip(offset).limit(limit)
+                const productscount = await productModel.find({"categoryName" : {$in : cat}})
+                const productsCount = productscount.length;
+                const totalPages = Math.ceil(productsCount / limit);
 
-            // res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages || 6}} , message:"fetch all products"})
-
-            // }
-
-            else{
-            let keyword = new RegExp(req.query.keyword.trim(),"i")
-            const productscount = await productModel.aggregate([{$match:{title:keyword}}]);
-            const productsCount = await productscount.length;
-            console.log(productsCount)
+            res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages}} , message:"fetch all products"})
+            }
+            else if(req.query.keyword && !req.query.catName){
+            let keyword = new RegExp(req.query.keyword,"i")
             const products = await productModel.aggregate([{$match:{title:keyword}}]).skip(offset).limit(limit);
+            const productscount = await productModel.aggregate([{$match:{title:keyword}}])
+            const productsCount = productscount.length;
             const totalPages = Math.ceil(productsCount / limit);
-            res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages}}, message:"fetch all products"})
+            res.status(200).send({apiStatus:true , data:{products,paging:{currentPage: page,totalPages:totalPages}}, message:"fetch filtered products"})
            }
         } 
         catch(e){
@@ -72,6 +68,46 @@ class Product {
 
         }
     }
+
+    static getRandomProducts= async(req,res) => {
+        try{    
+                var mysort = { name: 1 };
+                const products = await productModel.find({}).sort(mysort).limit(20)
+                res.status(200).send({apiStatus:true , data:{products}})
+        } 
+        catch(e){
+            res.status(500).send({apiStatus:false , data:e , message:e.message})    
+
+        }
+    }
+
+    static getProductsByCat= async(req,res) => {
+        try{
+            if(req.query.catName){
+                const products = await productModel.find({"categoryName" : req.query.catName})
+                res.status(200).send({apiStatus:true , data:{products}})
+            }
+        } 
+        catch(e){
+            res.status(500).send({apiStatus:false , data:e , message:e.message})    
+
+        }
+    }
+
+    // static getProductsDiscount= async(req,res) => {
+    //     try{
+    //             const products = await productModel.find({"discount":{$gt:0}})
+    //             console.log(products.length);
+    //             res.status(200).send({apiStatus:true , data:{products}})
+    //     }
+    //     catch(e){
+    //         res.status(500).send({apiStatus:false , data:e , message:e.message})    
+
+    //     }
+    // }
+
+
+
 
     // get single product ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
     
@@ -120,7 +156,9 @@ class Product {
 
     static addComment = async(req,res) => {
         try{
-            let productId= req.params.id;
+            let productId=req.params.id;
+            console.log(productId)
+            console.log(req.body)
             const Product = await productModel.findById(productId).populate("reviews.userId")
             if(!Product) return res.status(404).send({error:'Products Not found',code:404});
             Product.reviews.push(req.body)
@@ -128,6 +166,7 @@ class Product {
             res.status(200).send({apiStatus:true , data:Product, message:"Added Comment"})
         }
         catch(e){
+            console.log(e.message)
             res.status(500).send({apiStatus:false , data:e , message:e.message})    
 
         }

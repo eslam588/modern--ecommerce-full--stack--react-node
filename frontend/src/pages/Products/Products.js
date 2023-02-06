@@ -11,52 +11,57 @@ const Products = () => {
   //get all products
   const {data,isLoading, error} = useSelector((state)=> state.product)
 
-  console.log(isLoading)
   const dispatch= useDispatch();
   const [page , setPage] = useState(1)
   const [keyword , setKeyword] =useState("")
 
 
   useEffect(() => {
-    setPage(1)
-    dispatch(getproducts({keyword,page}))
+    dispatch(getproducts())
   },[])
 
 
   // search
 
   const handlesubmit = (e) => {
-        e.preventDefault();
-        setPage(1)
-        dispatch(getproducts({keyword,page}))
-        
-    }
-  //pagination 
-  
+      e.preventDefault();
+      dispatch(getproducts({keyword,page}))   
+  }
+
+
    useEffect(() => {
-     dispatch(getproducts({keyword,page}))
-   },[page])
+      if(keyword){
+      dispatch(getproducts({keyword,page}))
+      }
+   },[page,keyword])
 
-   const filterSelect = useCallback((category) => {
-    dispatch(getproducts({keyword,page,category}))
-   })
 
+   
+  useEffect(() => { 
+    if(!keyword && page>1 ){
+      setPage(1)
+    }
+ },[keyword])
+   
 
   return (
+    
     <div className='products-page mt-5 pt-5 '>
       <Search handlesubmit={handlesubmit} setKeyword={setKeyword} keyword={keyword}  />
       <div className="products-filter">
             <div className="row">
               <div className='col-12 col-md-6 col-lg-3'>
-                <Filter filterSelect={filterSelect}  />
+                <Filter keyword={keyword} page={page} />
               </div>
               <div className='col-12 col-md-6 col-lg-9'>
                 <Productscom products={data.products} isLoading={isLoading}  error={error} />
               </div>
            </div>
       </div>
-      <Paginationcom page={page} setPage={setPage} pages={data?.paging?.totalPages} />
-      {/* <Filter /> */}
+      { 
+        data.products?.length > 0 &&   <Paginationcom setPage={setPage} pages={data?.paging?.totalPages} keyword={keyword} page={page} />
+      }
+     
     </div>
   )
 }

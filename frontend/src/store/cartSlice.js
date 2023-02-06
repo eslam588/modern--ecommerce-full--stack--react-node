@@ -59,6 +59,8 @@ const cartSlice = createSlice({
                 state.itemsInCart.push(updatedproduct);
                 state.cartItemsnum += 1
                 state.totalCount +=updatedproduct.price*updatedproduct.quantity
+                let {itemsInCart,cartItemsnum,totalCount} = state
+                localStorage.setItem("cart",JSON.stringify({itemsInCart,cartItemsnum,totalCount}))   
             }
                 
         },

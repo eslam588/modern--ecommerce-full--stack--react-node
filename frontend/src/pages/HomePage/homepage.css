@@ -1,0 +1,10 @@
+.show-allproducts{
+    font-size:18px;
+    font-weight:bold;
+    border:2px solid #000
+}
+
+.show-allproducts:hover{
+    background-color:RGB(1, 61, 41);
+    color:white;
+}

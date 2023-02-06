@@ -27,12 +27,15 @@ app.use(express.urlencoded({extended: true}))
 
 const userRoutes = require('./src/routes/user.routes')
 const productRoutes = require('./src/routes/product.routes')
+const categoryRoutes = require("./src/routes/category.routes")
 const cartRoutes = require('./src/routes/cart.routes')
 const orderRoutes = require('./src/routes/order.routes')
 const stripeRoutes = require("./src/routes/stripe.routes");
 
+
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
+app.use("/category", categoryRoutes);
 app.use("/cart" , cartRoutes);
 app.use("/order", orderRoutes);
 app.use("/stripe", stripeRoutes )

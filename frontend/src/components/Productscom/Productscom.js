@@ -8,8 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 
-const Productscom = ({products,isLoading,error}) => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+const Productscom = ({products,isLoading}) => {
+  window.scrollTo({ top: 0, behavior: 'smooth'})
   return (
     <div className="products">
         <div className="container">
@@ -22,7 +22,7 @@ const Productscom = ({products,isLoading,error}) => {
               ) :
               <div className="row">
                 {
-                    products?.length > 0 && products.map(product => <Product product={product} />) 
+                    products?.length > 0 ? products.map(product => <Product product={product} /> ): <p className='p-5 text-center'>no products</p>
                 }
                 </div> 
             }

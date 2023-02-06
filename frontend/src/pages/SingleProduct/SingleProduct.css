@@ -26,11 +26,29 @@
   cursor: zoom-in;
 }
 
+.product-images img {
+  border-radius:5px;
+}
+.product-images img:hover {
+  cursor:pointer;
+}
+
+.product-images .activeImg{
+    border:2px solid green
+}
+
+
+
+
+
 @media screen and (max-width: 1000px) {
   .details .details-box .product-img {
     width: 100%;
   }
   .details .details-box .product-details {
     width: 100%;
+  }
+  .swiper-wrapper{
+    width:-1500px
   }
 }

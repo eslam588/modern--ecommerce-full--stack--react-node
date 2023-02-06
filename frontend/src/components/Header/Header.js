@@ -79,7 +79,6 @@ function ResponsiveAppBar() {
   return (   
     <AppBar>
       <Container maxWidth="xl">
-         {/* <Navbar /> */}
         <Toolbar disableGutters>
           <NavLink to="/home">
           <Typography
@@ -96,7 +95,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            Fashionista
+            <span className="site-logo">GIGAMALL</span>
           </Typography>
           </NavLink>
 
@@ -132,13 +131,15 @@ function ResponsiveAppBar() {
              >
                {pages.map((page) => (
                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                   <Typography textAlign="center">{page}</Typography>
+                  <NavLink to={`/${page}`}  className={({ isActive }) => isActive ? "activelink" : "" }>
+                     <Typography textAlign="center">{page}</Typography>
+                  </NavLink>
                  </MenuItem>
                ))}
+               
              </Menu>
             )}
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -155,14 +156,14 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            Shopcart
+            GIGAMALL
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' , justifyContent: 'center' }}}>
                 {pages.map((page) => (
                   <Button 
                   key={page}
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  sx={{ my: 2, color: 'white', display: 'block' , border:"5px" }}
                 >
                  <NavLink to={`/${page}`}  className={({ isActive }) =>
                  isActive ? "activelink" : "" }>

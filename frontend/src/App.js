@@ -23,8 +23,6 @@ const stripePromise=loadStripe("pk_test_51MFIdwB05pMXvSjmZQlaI443GxwnkF1wC6kkv3N
 
 
 function App() {
-   
-
   let userId =JSON.parse(localStorage.getItem('userId'));
   const {isLoggedIn} = useSelector((state)=> state.auth)
   const dispatch = useDispatch()
@@ -49,9 +47,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />  
           <Route path="/aboutus" element={<AboutUs />} />  
           <Route path="/profile" element={isLoggedIn ?<Profile /> : <Login/>} />  
-          {/* <Route path="/payment" element={isLoggedIn ?<Payment /> : <Login/>} />   */}
-          {/* <Route path="/success" element={isLoggedIn ?<Paymentsuccess /> : <Login/>} />   */}
-
+          <Route path="/success" element={isLoggedIn ?<Paymentsuccess /> : <Login/>} />  
           <Route path="*" element={isLoggedIn ? <Error/> : <Login/>}/>
         </Routes>
         <Footer /> 

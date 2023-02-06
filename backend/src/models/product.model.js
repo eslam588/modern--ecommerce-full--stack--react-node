@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+var random = require('mongoose-random');
 
 const ProductSchema = mongoose.Schema({
     title:{
@@ -14,13 +14,16 @@ const ProductSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    category:{
-        id:{type:Number},
-        name:{type:String},
-        image:{type:String}
+    categoryName:{
+        type: String, 
+        required:true,
+        ref:"Category"
     },
     images:{
         type:[String]
+    },
+    discount:{
+        type:Number
     },
     reviews:[
         {
@@ -39,11 +42,13 @@ const ProductSchema = mongoose.Schema({
                 trim:true,
                 required:true
             }
-        }
-    ]
+        } 
+    ]  
 },{timestamps:true})
-
 
 const Product = mongoose.model("Product",ProductSchema)
 module.exports = Product;
+
+
+
 

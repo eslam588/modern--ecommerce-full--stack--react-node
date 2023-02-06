@@ -8,7 +8,6 @@ import {toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Product = ({product}) => {
-window.scrollTo({ top: 0, behavior: 'smooth' })
 const {isLoggedIn} = useSelector((state)=> state.auth)
 const dispatch = useDispatch();
 const navigate = useNavigate();
@@ -26,11 +25,21 @@ return(
             <div className="card my-3 text-center mx-auto">
                 <NavLink to={`/products/${product._id}`} state={{product}}>
                     <div className="card-img mx-auto">
-                        <img src={`${product.images[0]}`} alt="img" />
+                      <img src={`http://localhost:8000/products/${product.images[0]}`} alt="img" />
+                      {
+                        product.discount &&  <span className='product-discount'>{product.discount}%</span>
+                      }
+                      
                     </div>
                     <div className="card-details">
-                        <h6>{product.title}</h6>
-                        <p>{product.price}$</p>
+                        <h5>{product.title}</h5>
+                        {
+                          product.discount ? (<p><span><del>{product.price.toFixed(2)}</del></span><span className='ms-2'>{(product.price-(product.price*product.discount/100)).toFixed(2)} <sub>EGP</sub></span></p> 
+                          
+                          ): <p>{product.price} <sub>EGP</sub></p>
+
+                        }
+                       
                     </div>
                     </NavLink>
                     <button  className="py-1 text-white" onClick={()=>addtocart(product)}>Add To Cart</button>

@@ -1,20 +1,25 @@
 .css-19r6kue-MuiContainer-root {
   background-color: RGB(255, 255, 255);
   color: black;
+  padding:10px
+
 }
 .activelink {
   border-bottom: 2px solid RGB(1, 61, 41);
-  background-color:RGB(1, 61, 41);
-  padding: 10px;
-  color:white !important;
+  background-color:RGB(255, 255, 255);
   border-radius:15px;
-  border:2px solid white;
+  border:2px solid RGB(1, 61, 41);
+}
+
+.activelink:hover{
+  background-color:RGB(255, 255, 255) !important;
 }
 a {
   text-decoration: none !important;
   color: #000 !important;
   padding: 5px;
 }
+
 
 
 .username{
@@ -28,3 +33,17 @@ AppBar{
   position:"sticky";
   top:0;
 }
+
+
+.site-logo{
+  font-size:25px;
+  font-weight:bolder;
+  text-shadow: 0 1px #808d93, -1px 0 #cdd2d5, -1px 2px #808d93, -2px 1px #cdd2d5, -2px 3px #808d93, -3px 2px #cdd2d5, -3px 4px #808d93, -4px 3px #cdd2d5, -4px 5px #808d93, -5px 4px #cdd2d5, -5px 6px #808d93, -6px 5px #cdd2d5, -6px 7px #808d93, -7px 6px #cdd2d5, -7px 8px #808d93, -8px 7px #cdd2d5, 2px 9px 2px rgba(106,206,26,0), 2px 9px 2px rgba(19,129,14,0), 2px 9px 2px rgba(19,129,14,0);
+}
+
+@media only screen and (max-width: 600px){
+  .MuiTypography-root{
+    font-size:20px !important;
+  }
+}
+

@@ -3,10 +3,50 @@ import axios from "axios"
 
 //get all products
 
-export const getproducts = createAsyncThunk('product/getproducts', async({keyword,page,category},thunkAPI) => {
+export const getproducts = createAsyncThunk('product/getproducts', async({keyword,page,categoriesname},thunkAPI) => {
     const {rejectWithValue} = thunkAPI
     try{
-        let url = `http://localhost:8000/product/getallproducts${page ? `?page=${page}`: ""}${keyword ? `&keyword=${keyword}`: ""}${category ? `&category=${category}`: ""}`
+        console.log(categoriesname)
+        let url = `http://localhost:8000/product/getallproducts${page ? `?page=${page}`: ""}${keyword ? `&keyword=${keyword}`: ""}${categoriesname ? `&catName=${categoriesname}`: ""}`
+        const res= await axios.get(url,{
+            header:{
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+        return res
+    }
+    catch(e){
+        return rejectWithValue(e.message)
+    }
+})
+
+
+//get random products
+
+export const getrandomproducts = createAsyncThunk('product/getrandomproducts', async(thunkAPI) => {
+    const {rejectWithValue} = thunkAPI
+    try{
+        let url = `http://localhost:8000/product/getrandomproducts`
+        const res= await axios.get(url,{
+            header:{
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+        console.log(res)
+        return res
+    }
+    catch(e){
+        return rejectWithValue(e.message)
+    }
+}) 
+
+//get all products
+
+export const getproductsbycat = createAsyncThunk('product/getproductsbycat',async(catName,thunkAPI) => {
+    const {rejectWithValue} = thunkAPI
+    try{
+        console.log(catName)
+        let url = `http://localhost:8000/product/getproductsbycat${catName ? `?catName=${catName}`: ""}`
         const res= await axios.get(url,{
             header:{
                 'Content-type': 'application/json; charset=UTF-8'
@@ -19,10 +59,10 @@ export const getproducts = createAsyncThunk('product/getproducts', async({keywor
     }
 }) 
 
-// export const filterproducts = createAsyncThunk('product/getproducts', async(keyword,thunkAPI) => {
+// export const getproductsbydiscount = createAsyncThunk('product/getproductsbydiscount',async(thunkAPI) => {
 //     const {rejectWithValue} = thunkAPI
 //     try{
-//         let url = `http://localhost:8000/product/getallproducts${keyword ? `?keyword=${keyword}`: ""}${page ? `?page=${page}`: ""}`
+//         let url = `http://localhost:8000/product/getproductsbydiscount`
 //         const res= await axios.get(url,{
 //             header:{
 //                 'Content-type': 'application/json; charset=UTF-8'
@@ -33,7 +73,7 @@ export const getproducts = createAsyncThunk('product/getproducts', async({keywor
 //     catch(e){
 //         return rejectWithValue(e.message)
 //     }
-// })
+// }) 
 
 
 export const productsreviews = createAsyncThunk('product/productsreviews', async(data,thunkAPI) => {
@@ -113,7 +153,7 @@ export const updatereview = createAsyncThunk('product/updatereview', async(produ
 
 const productSlice= createSlice({
     name:"product",
-    initialState:{data:{}, error:null , isLoading:false , reviews:[]},
+    initialState:{data:{},randomproducts:{},salesproducts:{},productsbycat:{},error:null,isLoading:false,reviews:[]},
 
     extraReducers:{
         //get all products 
@@ -132,22 +172,57 @@ const productSlice= createSlice({
             state.error=action.payload    
         },
         
-        // filterproducts
+        // get random products
+        [getrandomproducts.pending]: (state,action) => {
+            state.isLoading=true
+            state.error=null
 
-        // [filterproducts.pending]: (state,action) => {
+        },
+        [getrandomproducts.fulfilled]: (state,action) => {
+            state.isLoading=false
+            console.log(action.payload.data.data)
+            state.randomproducts=action.payload.data.data
+        },
+        [getrandomproducts.rejected]: (state,action) => {
+            state.isLoading=false
+            state.error=action.payload    
+        },
+
+        
+
+        //get products by category
+
+        [getproductsbycat.pending]: (state,action) => {
+            state.isLoading=true
+            state.error=null
+
+        },
+        [getproductsbycat.fulfilled]: (state,action) => {
+            state.isLoading=false
+            state.productsbycat=action.payload.data.data
+        },
+        [getproductsbycat.rejected]: (state,action) => {
+            state.isLoading=false
+            state.error=action.payload    
+        },
+     
+        //getproductsbydiscount
+
+        // [getproductsbydiscount.pending]: (state,action) => {
         //     state.isLoading=true
         //     state.error=null
 
         // },
-        // [filterproducts.fulfilled]: (state,action) => {
+        // [getproductsbydiscount.fulfilled]: (state,action) => {
         //     state.isLoading=false
-        //     state.data=action.payload.data.data
+        //     state.salesproducts=action.payload.data.data
         // },
-        // [filterproducts.rejected]: (state,action) => {
+        // [getproductsbydiscount.rejected]: (state,action) => {
         //     state.isLoading=false
         //     state.error=action.payload    
         // },
 
+        
         // reviews
         [productsreviews.pending]: (state,action) => {
             state.isLoading=true

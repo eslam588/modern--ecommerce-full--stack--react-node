@@ -7,21 +7,39 @@ import {useNavigate} from "react-router-dom";
 import Reviews from '../../components/Reviews/Reviews';
 import {toast,ToastContainer } from 'react-toastify';
 import {addToCart,incrementCart,decrementCart} from '../../store/cartSlice'
+import {getproductsbycat} from "../../store/productSlice"
 import 'react-toastify/dist/ReactToastify.css';
+import Product from "../../components/Product/Product"
+// import { Swiper, SwiperSlide } from 'swiper/react';
+// import SwiperCore , {Pagination,Navigation} from 'swiper/core'
+// import 'swiper/components/pagination/pagination.min.css'
+// import 'swiper/components/navigation/navigation.min.css'
+// import 'swiper/swiper.min.css';
 
+// SwiperCore.use([Pagination,Navigation])
+import { Swiper, SwiperSlide,navigation } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/autoplay'
 
 
 const SingleProduct = () => {
-
+  
   const location = useLocation();
   const product = location.state?.product
   const {isLoggedIn} = useSelector((state)=> state.auth)
   const {itemsInCart} = useSelector((state) => state.cart);
+  const {productsbycat,isLoading} = useSelector((state)=> state.product)
+  const productReviews = useSelector((state) => state.product.reviews);
   const [quant,setQuant] = useState(0)
+  const [indeximg,setIndexImg] = useState(0)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let userId =JSON.parse(localStorage.getItem('userId'));
   
+   useEffect(() => {
+    dispatch(getproductsbycat(product.categoryName))
+  },[])
+
 
   useEffect(()=>{
     if(itemsInCart?.length > 0){
@@ -29,13 +47,11 @@ const SingleProduct = () => {
       setQuant(cartProduct?.quantity)
     }
   },[product,dispatch,itemsInCart])
- 
-  
+
   const addtocart =(product) => {
     dispatch(addToCart(product))
     toast.success('Added To Cart Successfly');
   }
-
 
   const imgDiv = useRef();
 
@@ -48,27 +64,27 @@ const SingleProduct = () => {
 
   return (
     <div className='single-product container pt-3'>
-
-       {/* product details ---------------------------------------------------------------------------------  */}
-
       <div className="details mx-auto">
          <h3 className="title p-2 mb-2 text-center  mb-4">{product.title}</h3>
          <div className="details-box d-lg-flex justify-content-between">
-             <div className="product-img"  style={{backgroundImage:`url(${product.images[0]})`}} 
+             <div className="product-img"  style={{backgroundImage:`url(${`http://localhost:8000/products/${product.images[indeximg]}`})`}} 
                 onMouseMove={handleMouseMove}  ref={imgDiv} onMouseLeave = { () => imgDiv.current.style.backgroundPosition = `center`}>
              </div>
              <div className="product-details mt-4">
                 <p><span className='fw-bold'>Description</span> : {product.description}</p>
-                <p><span className='fw-bold'>category</span> : {product.category.name}</p>
-                <p> <span className='fw-bold'>Price</span> : {product.price} $</p>
+                <p> <span className='fw-bold'>Category </span> : {product.categoryName}</p>
+                <p> <span className='fw-bold'>Price</span> : {product.price} <sub>EGP</sub></p>
                 <button type="button" onClick={() => dispatch(incrementCart(product))} >+</button>
                 <span className="mx-3 fs-6  ">{quant || 0}</span>
                 <button type="button" onClick={()=> dispatch(decrementCart(product))}>-</button>
                 <div className="product-images mb-4 mt-3">
                 {   
-                    product.images.length>1 &&  product.images.map((img,index)=>{
+                    product.images.length > 1 &&  product.images.map((img,index)=>{
                     return(
-                        <img src={img} key={index} alt="" width="75px" height="75px" border="1" className="m-2"/> 
+                        <img src={`http://localhost:8000/products/${img}`} key={index} 
+                        className={index == indeximg ? "activeImg m-2" : "m-2"}
+                        alt="" width="75px" height="75px" border="1"
+                        onClick={()=>setIndexImg(index)}/> 
                     )
                  })
                 }
@@ -89,7 +105,30 @@ const SingleProduct = () => {
             draggable
             pauseOnHover
             theme="dark"
-          />  
+        />  
+        <div className="products-recommended">
+            <h3 className="text-center my-4">Recommended Products</h3>
+            <Swiper
+              spaceBetween={20}
+              slidesPerView={4}
+              width={1200}
+              autoplay
+              navigation={true}
+              scrollbar={{ draggable: true }}
+              onSlideChange={() => console.log('slide change')}
+              onSwiper={(swiper) => console.log(swiper)}
+            >
+                 {productsbycat.products?.length > 0 && productsbycat.products.map(product => {
+                return( 
+                  <SwiperSlide>
+                    <Product product={product} AddToCart={()=> dispatch(addToCart(product))} />
+                  </SwiperSlide>
+                 )
+              }) 
+            } 
+           </Swiper>
+           <hr/>
+        </div>
 
       {/*reviews section ------------------------------------------------------------------------------------- */}
       

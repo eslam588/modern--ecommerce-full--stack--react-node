@@ -3,6 +3,20 @@
 }
 
 
+.cart .cart-details .cart-product-name{
+    width:250px;
+    text-align:center;
+}
+
+.cart .cart-details .cart-product-total{
+    width:180px
+}
+
+
+.products-total{
+    width:100%
+}
+
 
 .cart .no-prod{
     margin-top:120px;
@@ -24,6 +38,6 @@
     top:0
 }
 
-.overlayView .brandingLogoView{
-    opacity: 0 !important
+.button>.inner>button{
+    background-color:red;
 }
